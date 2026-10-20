@@ -1,0 +1,7 @@
+[bindings.kotlin]
+package_name = "dev.cybercore.cybervault.core"
+cdylib_name = "cybervault_mobile"
+# Android-safe object cleanup: SystemCleaner on API 33+, JNA fallback below it
+# (java.lang.ref.Cleaner does not exist before Android 13).
+android = true
+android_cleaner = true

@@ -75,6 +75,8 @@ if [ -z "${ANDROID_SERIAL:-}" ]; then
   export ANDROID_SERIAL
 fi
 
+state=$(adb -s "$ANDROID_SERIAL" get-state 2>/dev/null || true)
+[ "$state" = device ] || die "device $ANDROID_SERIAL is not connected or not authorized (see 'adb devices')"
 model=$(adb shell getprop ro.product.model 2>/dev/null | tr -d '\r')
 say "Installing on ${model:-device} ($ANDROID_SERIAL)…"
 adb install -r "$tmp/cybervault.apk" >/dev/null || die "adb install failed (an older build signed with a different key must be uninstalled first)"

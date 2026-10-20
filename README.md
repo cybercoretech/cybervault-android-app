@@ -69,7 +69,13 @@ Gradle runs `cargo ndk` for both ABIs and generates the Kotlin bindings from an 
 cd rust && cargo fmt --check && cargo clippy --all-targets -- -D warnings && cargo test
 ```
 
-**Release signing** uses `CYBERVAULT_RELEASE_STORE_FILE`, `_STORE_PASSWORD`, `_KEY_ALIAS` and `_KEY_PASSWORD`. Locally they're in `~/Vaults/android/cybervault-release.env`; in CI they're repository secrets. Pushing a `vX.Y.Z` tag builds, signs and publishes the release (`versionCode = X·10⁶ + Y·10³ + Z`).
+**Releases are signed on the maintainer's machine. The release key is never uploaded to GitHub.** For a password vault, that means a compromised GitHub account or workflow can't sign a fake update. From a clean, up-to-date `main`:
+
+```sh
+tools/release.sh 0.2.0   # checks → signed build → verifies cert, version, no INTERNET → tag + GitHub release
+```
+
+It reads `CYBERVAULT_RELEASE_*` from `~/Vaults/android/cybervault-release.env` and maps `X.Y.Z` to `versionCode = X·10⁶ + Y·10³ + Z`. It needs `fastlane/metadata/android/en-US/changelogs/<versionCode>.txt`.
 
 ## 🧪 Testing
 

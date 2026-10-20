@@ -1,0 +1,1 @@
+Offline password vault with Keysmith built in. No internet permission.

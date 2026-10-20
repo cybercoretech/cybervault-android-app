@@ -1,0 +1,36 @@
+[package]
+name = "cybervault-mobile"
+version = "0.1.0"
+edition = "2021"
+publish = false
+description = "uniffi bridge: CyberVault's vault format + Keysmith's generators for the Android app"
+license = "MIT"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "cybervault_mobile"
+
+[[bin]]
+# Generates the Kotlin bindings from the compiled library (uniffi library mode).
+name = "uniffi-bindgen"
+path = "uniffi-bindgen.rs"
+required-features = ["bindgen"]
+
+[features]
+bindgen = ["uniffi/cli"]
+
+[dependencies]
+# Pinned to exact commits so every build (CI, F-Droid) compiles the same
+# vault format and generators. Move to the v0.2.0 tags once they exist.
+cybervault = { git = "https://github.com/cybercoretech/cybervault", rev = "17196d0de578d0c29e309608151bb08e325749d2", default-features = false }
+keysmith = { git = "https://github.com/cybercoretech/keysmith", rev = "d7b5924ab4bfdf560e3b6444fb1f829cf744bb59", default-features = false }
+uniffi = "0.32.2"
+zeroize = "1"
+
+[dev-dependencies]
+tempfile = "3"
+
+[profile.release]
+lto = true
+codegen-units = 1
+strip = true

@@ -1,0 +1,9 @@
+<p><b>CyberVault</b> is an offline password vault with <b>Keysmith</b> built in to generate strong passwords and passphrases. It uses the same encrypted vault format as the desktop CyberVault, from the same Rust code, so a vault file opens on either side.</p>
+<ul>
+<li><b>No internet permission</b>: secrets leave the phone only when you export them.</li>
+<li><b>Argon2id + ChaCha20-Poly1305</b>, with a fresh salt and nonce on every save; saves are atomic.</li>
+<li><b>Keysmith</b>: random passwords (8–64 characters, choose the sets, skip look-alikes) or EFF diceware passphrases (3–12 words), with a live entropy meter.</li>
+<li><b>Export and import</b> the encrypted vault file to move it to and from the desktop app.</li>
+<li><b>No screenshots</b>, sensitive clipboard entries cleared after 30 seconds, and auto-lock after 60 seconds in the background.</li>
+</ul>
+<p>There's no recovery if you forget the master password, by design.</p>

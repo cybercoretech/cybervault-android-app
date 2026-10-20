@@ -1,0 +1,1 @@
+First release: an offline vault with the desktop CyberVault format, the Keysmith password and passphrase generator, export/import, auto-lock, and a self-clearing sensitive clipboard.

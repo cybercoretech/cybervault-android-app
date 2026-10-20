@@ -1,0 +1,14 @@
+.gradle/
+.kotlin/
+.idea/
+**/build/
+local.properties
+*.iml
+*.apk
+*.aab
+*.keystore
+*.jks
+artifacts/
+__pycache__/
+app/src/main/jniLibs/
+rust/target/

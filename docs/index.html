@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en" data-theme="vault-midnight-lock">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>CyberVault for Android — your vault, in your pocket</title>
+  <meta name="description" content="CyberVault for Android: an offline password vault with Keysmith built in. Same encrypted CVL1 vault format as the desktop CyberVault — Argon2id + ChaCha20-Poly1305, no internet permission.">
+  <meta name="theme-color" content="#07070d">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpolygon points='50,4 90,27 90,73 50,96 10,73 10,27' fill='none' stroke='%2300f0ff' stroke-width='8'/%3E%3Ccircle cx='42' cy='50' r='11' fill='%23c6ff45'/%3E%3Crect x='50' y='46' width='26' height='8' fill='%23c6ff45'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    :root { --a1: var(--cyan); --a2: var(--pink); --a3: var(--acid); }
+    .hero-art { position: relative; display: grid; place-items: center; min-height: 34rem; }
+    .vault-ring { position: absolute; inset: 0; margin: auto; width: min(100%, 34rem); aspect-ratio: 1; }
+    .vault-ring svg { width: 100%; height: 100%; overflow: visible; }
+    .spin { transform-origin: 200px 200px; animation: spin 46s linear infinite; }
+    .spin.rev { animation-duration: 30s; animation-direction: reverse; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .phone { position: relative; width: 15.5rem; aspect-ratio: 9 / 20; border-radius: 2rem; padding: .55rem;
+      background: linear-gradient(160deg, color-mix(in srgb, var(--a1) 55%, var(--panel)), color-mix(in srgb, var(--a2) 45%, var(--panel)));
+      box-shadow: 0 0 0 1px var(--line), 0 0 48px color-mix(in srgb, var(--a1) 35%, transparent), 0 30px 80px #0009; animation: float 6s ease-in-out infinite; }
+    .phone img { width: 100%; height: 100%; object-fit: cover; border-radius: 1.55rem; display: block; background: var(--bg); }
+    @keyframes float { 50% { transform: translateY(-10px) rotate(-1deg); } }
+    /* Grid items default to min-width:auto, so the long install URL would
+       widen the hero past a phone screen. Let the columns shrink and wrap. */
+    .hero > * { min-width: 0; }
+    .hero-art { overflow: hidden; }
+    .install-hero { margin-top: 1.4rem; }
+    .install-hero pre { margin: 0; }
+    .install-hero pre code, #install pre code { white-space: pre-wrap; overflow-wrap: anywhere; }
+    .shots { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(11rem, 1fr); gap: 1rem; overflow-x: auto; padding-bottom: .6rem; scroll-snap-type: x mandatory; }
+    .shots figure { margin: 0; scroll-snap-align: start; }
+    .shots img { width: 100%; border-radius: 1.1rem; border: 1px solid var(--line); display: block; }
+    .shots figcaption { margin-top: .5rem; font: .78rem/1.3 var(--mono); color: var(--muted); letter-spacing: .08em; }
+    .gen { display: grid; gap: .8rem; }
+    .gen output { display: block; padding: 1rem 1.1rem; border: 1px solid var(--a2); background: color-mix(in srgb, var(--panel) 90%, transparent);
+      font: 700 1.05rem/1.4 var(--mono); color: var(--a3); word-break: break-all; min-height: 3.2rem; }
+    .gen .row { display: flex; flex-wrap: wrap; gap: .6rem; align-items: center; }
+    .gen input[type=range] { flex: 1 1 12rem; accent-color: var(--a1); }
+    .meter { height: .45rem; background: var(--line); position: relative; overflow: hidden; }
+    .meter i { position: absolute; inset: 0 auto 0 0; background: linear-gradient(90deg, var(--a2), var(--a1), var(--a3)); transition: width .25s; }
+    .bits { font: 700 .82rem/1 var(--mono); letter-spacing: .12em; }
+    .fmt { display: grid; grid-template-columns: auto 1fr; gap: .1rem 1rem; font: .9rem/1.6 var(--mono); }
+    .fmt b { color: var(--a1); font-weight: 400; }
+    @media (max-width: 900px) { .hero-art { min-height: 26rem; } .phone { width: 12.5rem; } }
+  </style>
+  <script>
+    window.SITE = {
+      defaultTheme: 'vault-midnight-lock',
+      mashups: [
+        { id: 'vault-midnight-lock', label: 'MIDNIGHT LOCK', base: 'dystopian-ward', accent: 'cyberpunk-hacker' },
+        { id: 'vault-keysmith-forge', label: 'KEYSMITH FORGE', base: 'cyberdyne-steel', accent: 'synthwave-sunset' },
+        { id: 'vault-neon-cipher', label: 'NEON CIPHER', base: 'kanagawa', accent: 'neosynth-plasma' }
+      ]
+    };
+  </script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="https://cybercoretech.github.io/" data-brand-phase="0" aria-label="Cybercore Tech home"><span class="brand-emblem">CC</span><span class="brand-name">CYBERCORE <b>/</b> CYBERVAULT<small>ANDROID</small></span></a>
+    <nav class="main-nav" aria-label="Primary"><a href="#features">FEATURES</a><a href="#crypto">CRYPTO</a><a href="#keysmith">KEYSMITH</a><a href="#install">INSTALL</a><a href="#themes">THEMES</a></nav>
+    <div class="theme-picker"><span class="theme-label">THEME</span><button id="themeButton" class="theme-button" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="themeMenu">LOADING THEMES…</button><div id="themeMenu" class="theme-menu" role="listbox" aria-label="Theme" hidden></div></div>
+  </header>
+
+  <main>
+    <section class="wrap hero">
+      <div>
+        <p class="eyebrow">Password vault · Android 11+ · Rust core</p>
+        <h1><span class="glitch" data-text="CYBER">CYBER</span><br><em>VAULT</em></h1>
+        <p class="tagline">Your vault, in your pocket. Offline by design.</p>
+        <p class="lede">The same encrypted vault as the desktop <a href="https://github.com/cybercoretech/cybervault">CyberVault</a> — one file, one master password — now on your phone, with <a href="https://github.com/cybercoretech/keysmith">Keysmith</a> built in to forge strong passwords and passphrases on the spot. The app has <em>no internet permission</em>: your secrets leave the phone only when you export them.</p>
+        <div class="chips"><span class="chip"><b>◆</b> ARGON2ID</span><span class="chip"><b>◆</b> CHACHA20-POLY1305</span><span class="chip"><b>◆</b> NO NETWORK</span><span class="chip"><b>◆</b> MIT</span></div>
+        <div class="install-hero reveal"><span class="label">ONE-LINER · PHONE ON USB · VERIFIES SHA-256</span>
+<pre class="code" data-copy><code>curl -fsSL https://cybercoretech.github.io/cybervault-android-app/install.sh | sh</code></pre></div>
+        <div class="cta"><a class="btn" href="https://github.com/cybercoretech/cybervault-android-app/releases/latest">DOWNLOAD APK ↗</a><a class="btn ghost" href="https://github.com/cybercoretech/cybervault-android-app">VIEW SOURCE ↗</a></div>
+      </div>
+      <div class="hero-art reveal" aria-hidden="true">
+        <div class="vault-ring">
+          <svg viewBox="0 0 400 400">
+            <defs><path id="circ" d="M200,200 m-170,0 a170,170 0 1,1 340,0 a170,170 0 1,1 -340,0"/></defs>
+            <g class="spin"><circle style="stroke:var(--line)" cx="200" cy="200" r="190" fill="none" stroke-dasharray="2 9"/>
+              <text style="fill:var(--muted)" font-family="monospace" font-size="11" letter-spacing="4"><textPath href="#circ">CVL1 · ARGON2ID · CHACHA20-POLY1305 · SALT · NONCE · SEALED · </textPath></text></g>
+            <g class="spin rev"><polygon style="stroke:var(--a1)" points="200,40 339,120 339,280 200,360 61,280 61,120" fill="none" stroke-width="1.5" stroke-dasharray="16 7"/></g>
+          </svg>
+        </div>
+        <div class="phone"><img src="screenshots/03-revealed.png" alt="CyberVault showing a vault entry with a revealed Keysmith passphrase" width="1080" height="2400"></div>
+      </div>
+    </section>
+
+    <section class="wrap section" id="features">
+      <div class="section-head reveal"><div><p class="eyebrow">01 / What it does</p><h2>A vault that<br><em>stays put.</em></h2></div><p>Everything a phone vault needs, nothing that phones home. Built with the same Rust code as the desktop app, so there is one implementation of the format and the crypto — not a Kotlin rewrite.</p></div>
+      <div class="grid g3">
+        <div class="card c-cyan reveal"><span class="num">◆ OFFLINE</span><h3>NO INTERNET PERMISSION</h3><p>The APK doesn't request network access at all, and CI fails the build if it ever does. Nothing to leak to, nothing to sync behind your back.</p></div>
+        <div class="card c-pink reveal"><span class="num">◆ ONE FORMAT</span><h3>DESKTOP-COMPATIBLE</h3><p>Export the encrypted vault file and open it in the desktop TUI, or import a desktop vault on the phone. Tested end to end: the desktop code reads what the phone writes.</p></div>
+        <div class="card c-acid reveal"><span class="num">◆ KEYSMITH INSIDE</span><h3>GENERATE IN PLACE</h3><p>Random passwords (8–64 chars, pick your sets, drop look-alikes) or EFF diceware passphrases (3–12 words), with a live entropy meter. One tap to use it.</p></div>
+        <div class="card c-cyan reveal"><span class="num">◆ LOCKDOWN</span><h3>NO SCREENSHOTS</h3><p><code>FLAG_SECURE</code> blocks screenshots, screen recording and the recent-apps thumbnail. Android backups and device transfer are disabled.</p></div>
+        <div class="card c-pink reveal"><span class="num">◆ CLIPBOARD</span><h3>SENSITIVE + SELF-CLEARING</h3><p>Copied secrets are flagged sensitive (keyboards and previews hide them) and wiped from the clipboard after 30 seconds, or on lock.</p></div>
+        <div class="card c-acid reveal"><span class="num">◆ AUTO-LOCK</span><h3>KEYS LEAVE MEMORY</h3><p>Locks after 60 s in the background or on demand. Locking drops the decrypted data and the password; the Rust side zeroizes them.</p></div>
+      </div>
+    </section>
+
+    <section class="wrap section" id="crypto">
+      <div class="section-head reveal"><div><p class="eyebrow">02 / Under the hood</p><h2>Password in.<br><em>Ciphertext out.</em></h2></div><p>The vault is one file in the app's private storage. Every save re-derives the key with a fresh salt and nonce and writes through a temp file, so a crash can't leave a half-written vault.</p></div>
+      <div class="pipeline reveal">
+        <div class="step"><h3>DERIVE</h3><p>Master password + 16-byte random salt → <b>Argon2id</b> → 256-bit key.</p></div>
+        <div class="step"><h3>SEAL</h3><p>Entries as JSON → <b>ChaCha20-Poly1305</b> with a fresh 12-byte nonce. The tag catches any tampering.</p></div>
+        <div class="step"><h3>WRITE</h3><p>Temp file → atomic rename. Mode 0600 inside a 0700 app-private directory.</p></div>
+        <div class="step"><h3>FORGET</h3><p>On lock, the decrypted entries and the password are dropped and zeroized.</p></div>
+      </div>
+      <div class="grid g2" style="margin-top:1.1rem">
+        <div class="reveal"><span class="label">VAULT FILE LAYOUT (CVL1)</span>
+          <div class="console"><div class="console-head"><span>● ● ● &nbsp; vault.cvlt</span><strong>BINARY</strong></div>
+            <div class="fmt" style="padding:1rem"><b>0..4</b><span>magic <code>CVL1</code></span><b>4..20</b><span>salt (16 bytes, not secret)</span><b>20..32</b><span>nonce (12 bytes, not secret)</span><b>32..</b><span>ciphertext + 16-byte Poly1305 tag</span></div></div></div>
+        <div class="reveal"><span class="label">HONEST LIMITS</span>
+          <ul class="list"><li><b>Forget the master password</b> and the vault is gone. There is no recovery, by design.</li><li><b>A compromised phone</b> (root, malware with accessibility access) can read what you can read once unlocked.</li><li><b>Kotlin strings</b> holding a revealed secret can't be wiped like Rust memory; the app keeps them short-lived.</li><li><b>Not yet:</b> Android Autofill and biometric quick-unlock (planned for 0.2), sync through Holodrive (later).</li></ul></div>
+      </div>
+    </section>
+
+    <section class="wrap section" id="keysmith">
+      <div class="section-head reveal"><div><p class="eyebrow">03 / Keysmith</p><h2>Forge it<br><em>right here.</em></h2></div><p>Keysmith's generators run inside the app from the same Rust library as the desktop CLI. Try the math: entropy grows with every word or character you add. (This page's demo uses your browser's CSPRNG for passwords only. The app generates everything locally.)</p></div>
+      <div class="grid g2">
+        <div class="gen reveal">
+          <span class="label">RANDOM PASSWORD · DEMO</span>
+          <output id="genOut" aria-live="polite">…</output>
+          <div class="row"><label for="genLen" class="bits">LENGTH <span id="genLenV">24</span></label><input id="genLen" type="range" min="8" max="64" value="24"></div>
+          <div class="meter" aria-hidden="true"><i id="genMeter"></i></div>
+          <div class="row"><span class="bits" id="genBits">…</span><button class="btn ghost" id="genAgain" type="button">REGENERATE</button></div>
+        </div>
+        <div class="reveal"><span class="label">ENTROPY AT A GLANCE</span>
+          <div class="console"><div class="console-head"><span>● ● ● &nbsp; keysmith</span><strong>BITS</strong></div>
+            <div class="fmt" style="padding:1rem"><b>6 words</b><span>≈ 77.5 bits · EFF Large (7,776 words)</span><b>8 words</b><span>≈ 103 bits</span><b>16 chars</b><span>≈ 104 bits · a-z A-Z 0-9 symbols</span><b>24 chars</b><span>≈ 157 bits</span></div></div>
+          <ul class="list" style="margin-top:1rem"><li>Passphrases use the full EFF Large Wordlist, pinned by SHA-256 so every Cybercore client uses the identical list.</li><li>Strength labels: WEAK &lt;50 · FAIR &lt;70 · STRONG &lt;100 · FORTRESS.</li></ul></div>
+      </div>
+    </section>
+
+    <section class="wrap section" id="screens">
+      <div class="section-head reveal"><div><p class="eyebrow">04 / Screens</p><h2>CYBERGRID<br><em>in your hand.</em></h2></div><p>Captured from a debug build on the Android emulator by the project's end-to-end smoke test. Release builds block screenshots entirely.</p></div>
+      <div class="shots reveal">
+        <figure><img src="screenshots/01-setup.png" alt="Create your vault screen" loading="lazy" width="1080" height="2400"><figcaption>01 · CREATE</figcaption></figure>
+        <figure><img src="screenshots/03-revealed.png" alt="Vault list with a revealed entry" loading="lazy" width="1080" height="2400"><figcaption>02 · REVEAL</figcaption></figure>
+        <figure><img src="screenshots/04-keysmith.png" alt="Keysmith passphrase generator" loading="lazy" width="1080" height="2400"><figcaption>03 · KEYSMITH</figcaption></figure>
+        <figure><img src="screenshots/05-settings.png" alt="Settings: change password, export, import, lock" loading="lazy" width="1080" height="2400"><figcaption>04 · SETTINGS</figcaption></figure>
+        <figure><img src="screenshots/06-locked.png" alt="Locked screen" loading="lazy" width="1080" height="2400"><figcaption>05 · LOCKED</figcaption></figure>
+      </div>
+    </section>
+
+    <section class="wrap section" id="install">
+      <div class="section-head reveal"><div><p class="eyebrow">05 / Install</p><h2>Three ways<br><em>in.</em></h2></div><p>Every release is a signed APK with a published SHA-256. Android only accepts updates signed with the same CyberVault release key.</p></div>
+      <div class="grid g2">
+        <div class="reveal"><span class="label">1 · FROM YOUR COMPUTER (ADB)</span>
+<pre class="code" data-copy><code><span class="c"># phone on USB with USB debugging on</span>
+curl -fsSL https://cybercoretech.github.io/cybervault-android-app/install.sh | sh
+
+<span class="c"># or read it first</span>
+curl -fsSLO https://cybercoretech.github.io/cybervault-android-app/install.sh
+less install.sh && sh install.sh</code></pre>
+          <ul class="list" style="margin-top:1rem"><li>Downloads the latest release, checks its <b>SHA-256</b>, then runs <code>adb install</code>.</li><li>Refuses to pick a device if more than one is connected; set <code>ANDROID_SERIAL</code>.</li></ul></div>
+        <div class="reveal"><span class="label">2 · OBTAINIUM (AUTO-UPDATES)</span>
+<pre class="code" data-copy><code>https://github.com/cybercoretech/cybervault-android-app</code></pre>
+          <span class="label" style="margin-top:1.2rem;display:block">3 · MANUAL</span>
+          <ul class="list"><li>Download <code>cybervault.apk</code> from <a href="https://github.com/cybercoretech/cybervault-android-app/releases/latest">the latest release</a> on the phone and open it.</li><li>Verify: <code>sha256sum --check cybervault.apk.sha256</code></li><li><b>Signing cert SHA-256:</b> <code style="word-break:break-all">9dfa3699b793ad16af999b2fbe99b4b13ee26f8014705cc661521ee2b15e52cb</code></li><li><b>F-Droid:</b> the Cybercore F-Droid repo is coming soon.</li></ul></div>
+      </div>
+    </section>
+
+    <section class="wrap section" id="themes">
+      <div class="section-head reveal"><div><p class="eyebrow">06 / Theme matrix</p><h2>Pick your<br><em>signal.</em></h2></div><p>Every Cybercore palette from the shared schema, grouped by family, plus CyberVault's own <b>signature mashups</b>, blending one palette's surfaces with another's neons.</p></div>
+      <div class="theme-strip reveal"><div><span class="label">NOW RUNNING · <span id="themeCount">…</span></span><div class="now" data-active-theme>…</div><div class="recipe" id="themeRecipe"></div></div><div></div><div id="swatches"></div></div>
+    </section>
+  </main>
+
+  <section class="contact-band" aria-label="Contact Cybercore Tech">
+    <div class="wrap"><cybercore-contact repo="cybervault-android-app"><a href="mailto:dev@cybercoretech.net">dev@cybercoretech.net</a></cybercore-contact></div>
+  </section>
+
+  <footer><span>CYBERCORE TECH / CYBERVAULT ANDROID / MIT / © <span id="year"></span></span><span><a href="https://cybercoretech.github.io/">CYBERCORETECH.GITHUB.IO</a> · <a href="https://github.com/cybercoretech/cybervault-android-app">SOURCE</a></span></footer>
+
+  <script>
+    // Password demo: same character sets as Keysmith, browser CSPRNG, rejection sampling (no modulo bias).
+    (() => {
+      const pool = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()-_=+[]{};:,.<>?';
+      const out = document.getElementById('genOut'), len = document.getElementById('genLen');
+      const lenV = document.getElementById('genLenV'), bits = document.getElementById('genBits'), meter = document.getElementById('genMeter');
+      const pick = () => { const lim = 256 - (256 % pool.length), b = new Uint8Array(1);
+        for (;;) { crypto.getRandomValues(b); if (b[0] < lim) return pool[b[0] % pool.length]; } };
+      const label = (x) => x < 50 ? 'WEAK' : x < 70 ? 'FAIR' : x < 100 ? 'STRONG' : 'FORTRESS';
+      const run = () => { const n = +len.value; lenV.textContent = n;
+        out.textContent = Array.from({ length: n }, pick).join('');
+        const e = n * Math.log2(pool.length); bits.textContent = `${label(e)} · ${Math.round(e)} BITS`;
+        meter.style.width = Math.min(100, e / 1.6) + '%'; };
+      len.addEventListener('input', run); document.getElementById('genAgain').addEventListener('click', run); run();
+    })();
+  </script>
+  <script src="app.js"></script>
+  <script type="module" src="https://cybercoretech.github.io/kit/contact.js"></script>
+</body>
+</html>

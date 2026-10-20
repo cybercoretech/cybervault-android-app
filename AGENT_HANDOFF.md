@@ -5,9 +5,9 @@ The state of the project for the next agent (or person) picking it up. Keep it c
 ## 📍 Repository state (2026-10-20)
 
 - **Repo:** `cybercoretech/cybervault-android-app`, local checkout `~/Devspace/Android/CyberVault` on Blackbox.
-- **v0.1 (first PR):** a working app, tests, CI, release workflow, Pages site, `install.sh` and F-Droid metadata. **Not tagged or released yet.**
+- **Released:** **v0.1.0** (2026-10-20), signed locally with `tools/release.sh`. Pages is live at https://cybercoretech.github.io/cybervault-android-app/.
 - **Dependencies:** `rust/Cargo.toml` pins `cybervault` and `keysmith` to their **`v0.2.0` tags** (Cargo.lock: cybervault `b24e7ba`, keysmith `1cb2247`). Both crates have `lib` targets and a default `cli` feature; the app uses `default-features = false`. Bump the tags deliberately and rerun `tools/emulator_smoke.py` (it checks desktop compatibility).
-- **Release key:** `~/Vaults/android/cybervault-release.jks` + `cybervault-release.env` (0600). Certificate SHA-256 `9dfa3699b793ad16af999b2fbe99b4b13ee26f8014705cc661521ee2b15e52cb`, pinned in `docs/install.sh`, the README, SECURITY.md and the site. **Never regenerate it:** installed apps can only update with this key. GitHub secrets: `CYBERVAULT_RELEASE_KEYSTORE_BASE64` (base64 of the .jks), `CYBERVAULT_RELEASE_STORE_PASSWORD`, `CYBERVAULT_RELEASE_KEY_ALIAS`, `CYBERVAULT_RELEASE_KEY_PASSWORD`.
+- **Release key:** `~/Vaults/android/cybervault-release.jks` + `cybervault-release.env` (0600). Certificate SHA-256 `9dfa3699b793ad16af999b2fbe99b4b13ee26f8014705cc661521ee2b15e52cb`, pinned in `docs/install.sh`, the README, SECURITY.md and the site. **Never regenerate it:** installed apps can only update with this key. **It is never uploaded to GitHub** (the user's decision, 2026-10-20): releases are signed locally by `tools/release.sh`. There is no CI release workflow; the old one was removed. The keystore password was rotated on 2026-10-20 after it leaked into a local session log (same key and cert).
 
 ## ✅ Strict resume checklist
 
@@ -51,6 +51,8 @@ fastlane/        F-Droid/store metadata (changelog file name = versionCode)
 
 ## ⚠️ Invariants and gotchas
 
+- **Never run `tools/release.sh` under `bash -x`:** it sources the signing env, and tracing prints the keystore password.
+
 - **Bindings from a host build:** the shipped `.so` files are stripped (`strip = true`), which removes uniffi metadata, so `uniffiBindings` builds the host library to generate the Kotlin.
 - **`android = true` and `android_cleaner = true` in `rust/uniffi.toml`:** without them lint fails on `java.lang.ref.Cleaner` (API 33; minSdk is 30).
 - **Don't add `panic = "abort"`** to the release profile: uniffi turns panics into Kotlin exceptions; abort would crash the app.
@@ -68,3 +70,4 @@ fastlane/        F-Droid/store metadata (changelog file name = versionCode)
 
 - #1: v0.1, the first app (merged 2026-10-20).
 - #2: deps moved from the PR commits to the cybervault/keysmith `v0.2.0` tags.
+- #3: local release signing (`tools/release.sh`), CI release workflow removed, clearer installer device error. v0.1.0 was released with that script.

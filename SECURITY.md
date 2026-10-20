@@ -13,5 +13,6 @@ In scope: the app, the Rust bridge in `rust/`, the release workflow, and `docs/i
 - `cybervault.apk.sha256` sits beside every APK.
 - Release signing certificate SHA-256: `9dfa3699b793ad16af999b2fbe99b4b13ee26f8014705cc661521ee2b15e52cb`
 - Check it with: `apksigner verify --print-certs cybervault.apk`
+- Releases are built and signed on the maintainer's machine (`tools/release.sh`); the key isn't stored in GitHub.
 
 See [docs/THREAT_MODEL.md](docs/THREAT_MODEL.md) for what CyberVault does and doesn't defend against.

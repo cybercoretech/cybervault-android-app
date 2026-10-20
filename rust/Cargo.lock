@@ -276,7 +276,7 @@ dependencies = [
 [[package]]
 name = "cybervault"
 version = "0.2.0"
-source = "git+https://github.com/cybercoretech/cybervault?rev=17196d0de578d0c29e309608151bb08e325749d2#17196d0de578d0c29e309608151bb08e325749d2"
+source = "git+https://github.com/cybercoretech/cybervault?tag=v0.2.0#b24e7ba076d83e9e09a3e972d7a83d71ce4d4a5d"
 dependencies = [
  "argon2",
  "chacha20poly1305",
@@ -430,7 +430,7 @@ checksum = "8f42a60cbdf9a97f5d2305f08a87dc4e09308d1276d28c869c684d7777685682"
 [[package]]
 name = "keysmith"
 version = "0.2.0"
-source = "git+https://github.com/cybercoretech/keysmith?rev=d7b5924ab4bfdf560e3b6444fb1f829cf744bb59#d7b5924ab4bfdf560e3b6444fb1f829cf744bb59"
+source = "git+https://github.com/cybercoretech/keysmith?tag=v0.2.0#1cb2247d0cf7ddeaa17df55f1de15dac27c2116b"
 dependencies = [
  "rand",
  "sha2",

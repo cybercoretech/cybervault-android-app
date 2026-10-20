@@ -20,10 +20,11 @@ required-features = ["bindgen"]
 bindgen = ["uniffi/cli"]
 
 [dependencies]
-# Pinned to exact commits so every build (CI, F-Droid) compiles the same
-# vault format and generators. Move to the v0.2.0 tags once they exist.
-cybervault = { git = "https://github.com/cybercoretech/cybervault", rev = "17196d0de578d0c29e309608151bb08e325749d2", default-features = false }
-keysmith = { git = "https://github.com/cybercoretech/keysmith", rev = "d7b5924ab4bfdf560e3b6444fb1f829cf744bb59", default-features = false }
+# Pinned to release tags (Cargo.lock records the exact commits), so every
+# build, including CI and F-Droid, compiles the same vault format and
+# generators.
+cybervault = { git = "https://github.com/cybercoretech/cybervault", tag = "v0.2.0", default-features = false }
+keysmith = { git = "https://github.com/cybercoretech/keysmith", tag = "v0.2.0", default-features = false }
 uniffi = "0.32.2"
 zeroize = "1"
 

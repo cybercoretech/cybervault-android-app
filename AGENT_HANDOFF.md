@@ -6,7 +6,7 @@ The state of the project for the next agent (or person) picking it up. Keep it c
 
 - **Repo:** `cybercoretech/cybervault-android-app`, local checkout `~/Devspace/Android/CyberVault` on Blackbox.
 - **v0.1 (first PR):** a working app, tests, CI, release workflow, Pages site, `install.sh` and F-Droid metadata. **Not tagged or released yet.**
-- **Depends on unmerged PRs:** `rust/Cargo.toml` pins `cybervault` and `keysmith` to **exact commits** on their PR branches (cybervault#1 `feat/holodrive-bridge`, keysmith#1 `feat/passphrase-api`). Those PRs add the `lib` targets and the `cli` feature this app needs. Once they're merged and tagged `v0.2.0`, switch both deps to `tag = "v0.2.0"`, run `cargo update -p cybervault -p keysmith`, rebuild and retest.
+- **Dependencies:** `rust/Cargo.toml` pins `cybervault` and `keysmith` to their **`v0.2.0` tags** (Cargo.lock: cybervault `b24e7ba`, keysmith `1cb2247`). Both crates have `lib` targets and a default `cli` feature; the app uses `default-features = false`. Bump the tags deliberately and rerun `tools/emulator_smoke.py` (it checks desktop compatibility).
 - **Release key:** `~/Vaults/android/cybervault-release.jks` + `cybervault-release.env` (0600). Certificate SHA-256 `9dfa3699b793ad16af999b2fbe99b4b13ee26f8014705cc661521ee2b15e52cb`, pinned in `docs/install.sh`, the README, SECURITY.md and the site. **Never regenerate it:** installed apps can only update with this key. GitHub secrets: `CYBERVAULT_RELEASE_KEYSTORE_BASE64` (base64 of the .jks), `CYBERVAULT_RELEASE_STORE_PASSWORD`, `CYBERVAULT_RELEASE_KEY_ALIAS`, `CYBERVAULT_RELEASE_KEY_PASSWORD`.
 
 ## ✅ Strict resume checklist
@@ -66,4 +66,5 @@ fastlane/        F-Droid/store metadata (changelog file name = versionCode)
 
 ## 📜 PR history
 
-- *(pending)* #1: v0.1, the first app.
+- #1: v0.1, the first app (merged 2026-10-20).
+- #2: deps moved from the PR commits to the cybervault/keysmith `v0.2.0` tags.

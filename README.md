@@ -27,7 +27,7 @@ The script downloads the latest release and checks its **SHA-256** and, when `ap
 **Other ways in:**
 - **Obtainium** (auto-updates): add `https://github.com/cybercoretech/cybervault-android-app`.
 - **Manual:** download `cybervault.apk` from the latest release on the phone and open it. Verify it with `sha256sum --check cybervault.apk.sha256`.
-- **F-Droid:** the Cybercore F-Droid repo is coming.
+- **F-Droid (auto-updates):** add the Cybercore repository at <https://cybercoretech.github.io/fdroid/> (tap *Add to F-Droid* or scan the QR code), then install *CyberVault*. Direct link: <https://cybercoretech.github.io/fdroid/#app=dev.cybercore.cybervault>.
 
 🪪 **Release signing certificate (SHA-256):**
 `9dfa3699b793ad16af999b2fbe99b4b13ee26f8014705cc661521ee2b15e52cb`
@@ -86,7 +86,7 @@ It reads `CYBERVAULT_RELEASE_*` from `~/Vaults/android/cybervault-release.env` a
 ## 🗺️ Roadmap
 
 - **0.2:** Android Autofill service; biometric quick-unlock on top of the master password.
-- **Later:** sync through Holodrive; listing on the Cybercore F-Droid repo, then the main F-Droid catalog with reproducible builds.
+- **Later:** sync through Holodrive; the main F-Droid catalog once builds are reproducible (it's already in the [Cybercore F-Droid repo](https://cybercoretech.github.io/fdroid/)).
 
 ## 🔗 Related
 

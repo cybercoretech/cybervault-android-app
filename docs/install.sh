@@ -1,15 +1,23 @@
 #!/bin/sh
-# CyberVault for Android — install the latest signed release over adb.
+# CyberVault for Android: install the latest signed release over adb.
 #
 #   curl -fsSL https://cybercoretech.github.io/cybervault-android-app/install.sh | sh
 #
 # Downloads cybervault.apk and its .sha256 from the latest GitHub release,
 # verifies the checksum, then `adb install -r`s it on the connected phone.
 # With several devices attached, set ANDROID_SERIAL to choose one; the
-# script never guesses. Set CYBERVAULT_VERSION=v0.1.0 to pin a release.
+# script never guesses. Set CYBERVAULT_VERSION=vX.Y.Z to pin a release.
+# Prefer automatic updates? Add the Cybercore F-Droid repository instead:
+#   https://cybercoretech.github.io/fdroid/
 set -eu
 
+# Everything runs inside main, which is only called on the last line, so a
+# truncated download or `curl | sh` can never execute a partial script.
+main() {
+
+APP="CyberVault"
 REPO="cybercoretech/cybervault-android-app"
+ASSET="cybervault.apk"
 # SHA-256 of the CyberVault release signing certificate (also in the README
 # and on the site). Checked whenever apksigner is available.
 CERT_SHA256="9dfa3699b793ad16af999b2fbe99b4b13ee26f8014705cc661521ee2b15e52cb"
@@ -37,14 +45,14 @@ fi
 tmp=$(mktemp -d)
 trap 'rm -rf "$tmp"' EXIT INT TERM
 
-say "Downloading CyberVault ($VERSION)…"
-curl -fsSL --proto '=https' --tlsv1.2 -o "$tmp/cybervault.apk" "$base/cybervault.apk" \
-  || die "download failed: $base/cybervault.apk"
-curl -fsSL --proto '=https' --tlsv1.2 -o "$tmp/cybervault.apk.sha256" "$base/cybervault.apk.sha256" \
+say "Downloading $APP ($VERSION)…"
+curl -fsSL --proto '=https' --tlsv1.2 -o "$tmp/$ASSET" "$base/$ASSET" \
+  || die "download failed: $base/$ASSET"
+curl -fsSL --proto '=https' --tlsv1.2 -o "$tmp/$ASSET.sha256" "$base/$ASSET.sha256" \
   || die "checksum download failed"
 
-expected=$(cut -d' ' -f1 "$tmp/cybervault.apk.sha256")
-actual=$(sha "$tmp/cybervault.apk")
+expected=$(cut -d' ' -f1 "$tmp/$ASSET.sha256")
+actual=$(sha "$tmp/$ASSET")
 [ -n "$expected" ] && [ "$expected" = "$actual" ] \
   || die "SHA-256 mismatch: expected $expected, got $actual. Not installing."
 say "SHA-256 verified: $actual"
@@ -54,18 +62,18 @@ for c in apksigner "${ANDROID_HOME:-$HOME/android}"/build-tools/*/apksigner; do
   if command -v "$c" >/dev/null 2>&1 || [ -x "$c" ]; then signer=$c; fi
 done
 if [ -n "$signer" ]; then
-  cert=$("$signer" verify --print-certs "$tmp/cybervault.apk" 2>/dev/null \
+  cert=$("$signer" verify --print-certs "$tmp/$ASSET" 2>/dev/null \
     | sed -n 's/.*certificate SHA-256 digest: //p' | head -1)
   [ "$cert" = "$CERT_SHA256" ] || die "signing certificate mismatch (got ${cert:-none}). Not installing."
-  say "Signing certificate verified: CyberVault release key"
+  say "Signing certificate verified: $APP release key"
 else
   say "apksigner not found: skipping the certificate check (Android still enforces the key on updates)"
 fi
 
 if [ -z "${ANDROID_SERIAL:-}" ]; then
-  devices=$(adb devices | awk 'NR > 1 && $2 == "device" { print $1 }')
+  devices=$(adb devices </dev/null | awk 'NR > 1 && $2 == "device" { print $1 }')
   count=$(printf '%s\n' "$devices" | grep -c . || true)
-  unauthorized=$(adb devices | awk 'NR > 1 && $2 == "unauthorized"' | grep -c . || true)
+  unauthorized=$(adb devices </dev/null | awk 'NR > 1 && $2 == "unauthorized"' | grep -c . || true)
   if [ "$count" -eq 0 ]; then
     [ "$unauthorized" -gt 0 ] && die "the phone hasn't authorized this computer yet: unlock it and accept the USB debugging prompt"
     die "no device found: connect the phone over USB and turn on USB debugging"
@@ -75,9 +83,12 @@ if [ -z "${ANDROID_SERIAL:-}" ]; then
   export ANDROID_SERIAL
 fi
 
-state=$(adb -s "$ANDROID_SERIAL" get-state 2>/dev/null || true)
+state=$(adb -s "$ANDROID_SERIAL" get-state </dev/null 2>/dev/null || true)
 [ "$state" = device ] || die "device $ANDROID_SERIAL is not connected or not authorized (see 'adb devices')"
-model=$(adb shell getprop ro.product.model 2>/dev/null | tr -d '\r')
+model=$(adb shell getprop ro.product.model </dev/null 2>/dev/null | tr -d '\r')
 say "Installing on ${model:-device} ($ANDROID_SERIAL)…"
-adb install -r "$tmp/cybervault.apk" >/dev/null || die "adb install failed (an older build signed with a different key must be uninstalled first)"
-say "Done. Open CyberVault on your phone and create your vault."
+adb install -r "$tmp/$ASSET" </dev/null >/dev/null || die "adb install failed (an older build signed with a different key must be uninstalled first)"
+say "Done. Open $APP on your phone."
+}
+
+main "$@"

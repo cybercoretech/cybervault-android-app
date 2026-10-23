@@ -6,6 +6,14 @@ An offline password vault for Android 11+, with [Keysmith](https://github.com/cy
 
 🌐 **Site:** <https://cybercoretech.github.io/cybervault-android-app/> · 📦 **Releases:** [latest](https://github.com/cybercoretech/cybervault-android-app/releases/latest) · 🪪 **License:** MIT
 
+The project site uses the versioned Cybercore Web Kit at
+`https://cybercoretech.github.io/kit/v1/`. Android-specific presentation stays in
+`docs/styles.css` and the page's small inline behaviors; the shared theme engine,
+theme registry, reveal behavior, copy controls, and reduced-motion handling are
+provided by the Web Kit. The phone hero and security cards are intentionally
+content-driven so future device details can be added without duplicating the
+global runtime.
+
 <p align="center">
   <img src="docs/screenshots/01-setup.png" width="19%" alt="Create vault">
   <img src="docs/screenshots/03-revealed.png" width="19%" alt="Vault entry revealed">

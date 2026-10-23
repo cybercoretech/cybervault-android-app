@@ -8,6 +8,19 @@ permissions:
 env:
   NDK_VERSION: 27.2.12479018
 jobs:
+  site:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Validate Cybercore Web Kit integration
+        run: |
+          test -f docs/index.html
+          test -f docs/styles.css
+          test ! -e docs/app.js
+          grep -q 'https://cybercoretech.github.io/kit/v1/cybercore.js' docs/index.html
+          grep -q 'https://cybercoretech.github.io/kit/v1/effects.css' docs/index.html
+          grep -q 'data-cc-effect="telemetry-pulse"' docs/index.html
+          git diff --check
   check:
     runs-on: ubuntu-latest
     steps:

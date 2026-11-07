@@ -107,6 +107,59 @@
       }
     };
   </script>
+  <style id="cc-mobile-first">
+/* Mobile floor (phones + tablets): readable text and finger-sized targets.
+   Generated per range from what renders under 11px / 24px; desktop untouched. */
+@media (max-width: 600px) {
+  span.device-meta,
+  span.device-meta > b,
+  button.inspect { font-size: 11px !important; }
+}
+@media (min-width: 601px) and (max-width: 860px) {
+  small,
+  span.device-meta,
+  span.device-meta > b,
+  button.inspect { font-size: 11px !important; }
+}
+@media (min-width: 861px) and (max-width: 1024px) {
+  small,
+  span.device-meta,
+  span.device-meta > b,
+  button.inspect { font-size: 11px !important; }
+}
+@media (pointer: coarse) {
+  span > a,
+  li > a { display: inline-flex; align-items: center; min-height: 24px; min-width: 24px; }
+}
+/* Mobile floor (phones + tablets): readable text and finger-sized targets.
+   Generated per range from what renders under 11px / 24px; desktop untouched. */
+@media (max-width: 600px) {
+  button.copy { font-size: 11px !important; }
+}
+@media (min-width: 601px) and (max-width: 860px) {
+  button.copy { font-size: 11px !important; }
+}
+@media (min-width: 861px) and (max-width: 1024px) {
+  button.copy { font-size: 11px !important; }
+}
+@media (pointer: coarse) {
+  button.copy { min-height: 24px; min-width: 24px; }
+}
+/* Layout fixes: phones and tablets only; laptops and desktops untouched. */
+@media (max-width: 1024px) {
+  /* Mobile first: nothing may make the page wider than the screen.
+     Grid/flex columns may shrink below their widest line; code scrolls in place. */
+  pre { max-width: 100%; overflow-x: auto; }
+  img, video { max-width: 100%; height: auto; }
+  g.spin > text { white-space: normal; overflow-wrap: anywhere; }
+  text > textpath { white-space: normal; overflow-wrap: anywhere; }
+  div.shots > * { min-width: 0; }
+  /* Long paths and URLs in inline code may break anywhere instead of widening the page. */
+  :not(pre) > code { overflow-wrap: anywhere; }
+  /* Touch: form controls get a 24px target. */
+  .row input { min-height: 24px; }
+}
+  </style>
 </head>
 <body>
   <header class="site-header">
